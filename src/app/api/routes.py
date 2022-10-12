@@ -1,9 +1,10 @@
 from fastapi import APIRouter, FastAPI
+from app.auth.models import AuthResponse
 
 
 def setup_routes(app: FastAPI) -> None:
     auth_router = APIRouter(prefix='/auth')
-    auth_router.api_route(path='', methods=['POST'], response_model=...)
+    auth_router.api_route(path='', methods=['POST'], response_model=AuthResponse)
 
     pizza_router = APIRouter(prefix='/pizza')
     pizza_router.api_route(path='', methods=['GET'], response_model=...)
