@@ -12,7 +12,7 @@ def prepare_app():
 def start_app():
     uvicorn.run(
         app=prepare_app(),
-        host='12.0.0.1',
+        host='127.0.0.1',
         port=8000,
     )
 
