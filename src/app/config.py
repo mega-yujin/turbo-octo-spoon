@@ -7,10 +7,11 @@ SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
 
 fake_users_db = {
     "johndoe": {
+        "id": "921b2b87-8a19-4a11-86c4-b395de29973e",
         "username": "johndoe",
-        "full_name": "John Doe",
+        # "full_name": "John Doe",
         "email": "johndoe@example.com",
         "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-        "disabled": False,
+        "is_active": True,
     }
 }

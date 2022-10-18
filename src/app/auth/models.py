@@ -4,11 +4,11 @@ from typing import Optional, Union
 
 
 class User(BaseModel):
-    # id: UUID
+    id: UUID
     username: str
     email: Union[str, None] = None
-    full_name: Union[str, None] = None
-    disabled: Union[bool, None] = None
+    # full_name: Union[str, None] = None
+    is_active: Union[bool, None] = None
 
 
 class UserInDB(User):
