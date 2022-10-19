@@ -47,45 +47,9 @@ class Ingredient(Base):
     pizza = relationship("Pizza", secondary=pizza_ingredient_table, back_populates="ingredients")
 
 
-# class Order(Base):
-#     __tablename__ = "orders"
-#
-#
-# class OrderPizza(Base):
-#     __tablename__ = "order_pizzas"
-
-from app.system.database import SessionLocal
-from app.auth import models
-from app.system.database import engine
+class Order(Base):
+    __tablename__ = "orders"
 
 
-def create_user(db: SessionLocal, user: models.User):
-    password = 'ololo'
-    db_user = User(
-        id=user.id,
-        username='fffinik',
-        email=user.email,
-        hashed_password=password,
-        is_active=user.is_active,
-    )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
-
-
-py_user = models.User(
-    id='857cbf13-d22a-4d1c-91ff-b74de2d916d8',
-    username='finik',
-    email='kot@mail.com',
-    is_active=True,
-)
-
-# tables = [User.__table__,]
-# Base.metadata.create_all(engine, tables=tables)
-
-db_session = SessionLocal()
-new_user = create_user(db_session, py_user)
-print(new_user)
-
-
+class OrderPizza(Base):
+    __tablename__ = "order_pizzas"
