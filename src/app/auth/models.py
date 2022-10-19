@@ -1,9 +1,9 @@
-from pydantic import BaseModel
+from app.api.models import ORMBaseModel
 from uuid import UUID
 from typing import Optional, Union
 
 
-class User(BaseModel):
+class User(ORMBaseModel):
     # id: UUID
     id: str
     username: str
@@ -18,16 +18,16 @@ class UserInDB(User):
     hashed_password: str
 
 
-class Token(BaseModel):
+class Token(ORMBaseModel):
     access_token: str
     token_type: str
 
 
-class TokenData(BaseModel):
+class TokenData(ORMBaseModel):
     username: Union[str, None] = None
 
 
-class AuthResponse(BaseModel):
+class AuthResponse(ORMBaseModel):
     result: str
     detail: str
     token: Token

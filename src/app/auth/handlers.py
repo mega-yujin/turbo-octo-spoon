@@ -30,7 +30,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     )
 
 
-# @app.get("/users/me/", response_model=User)
 async def get_user_data(current_user: User = Depends(get_current_active_user)):
     return current_user
 
