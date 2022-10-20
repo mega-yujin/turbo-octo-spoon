@@ -29,12 +29,29 @@ def create_user(db: SessionLocal, user: User):
     return db_user
 
 
-def add_ingredients(db: SessionLocal, category: PizzaCategory):
+def add_ingredients(db: SessionLocal, category: Ingredient):
     db_category = IngredientsTable(**category.dict())
     db.add(db_category)
     db.commit()
     db.refresh(db_category)
     return db_category
+
+
+def add_pizzas(db: SessionLocal, pizza: Pizza):
+    db_pizza = PizzasTable(
+        id=pizza.id,
+        name=pizza.name,
+        category=pizza.category,
+        description=pizza.description,
+        price=pizza.price,
+        calories=pizza.calories,
+        weight=pizza.weight,
+        ingredients=[IngredientsTable(**ingredient.dict()) for ingredient in pizza.ingredients],
+    )
+    db.add(db_pizza)
+    db.commit()
+    db.refresh(db_pizza)
+    return db_pizza
 
 
 USERS = [
@@ -76,22 +93,22 @@ PIZZAS = [
         price=20.5,
         calories=520,
         weight=320,
-        ingredients=(
+        ingredients=[
             Ingredient(
                 id='857cbf13-4fg2-4d1c-91ff-b74de2d916d2',
                 name='mozarella',
             ),
             Ingredient(
                 id='561cbf13-d22a-4d1c-91ff-b74de2d916d2',
-                name='tomato',
+                name='tomatoto',
             ),
-        ),
+        ],
     )
 ]
 
 ### TABLES CREATION ###
 
-# tables = [PizzasTable.__table__, IngredientsTable.__table__, ]
+# tables = [PizzasTable.__table__, IngredientsTable.__table__, UsersTable.__table__]
 # Base.metadata.create_all(engine, tables=tables)
 #
 # pizza_ingredient_table.create(engine)
@@ -99,9 +116,12 @@ PIZZAS = [
 ### INSERT DATA INTO DATABASE ###
 
 db_session = SessionLocal()
-
-for user in USERS:
-    create_user(db_session, user)
+#
+# for user in USERS:
+#     create_user(db_session, user)
 
 # for ing in INGREDIENTS:
 #     add_ingredients(db_session, ing)
+
+for pizza in PIZZAS:
+    add_pizzas(db_session, pizza)
