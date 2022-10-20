@@ -45,9 +45,9 @@ class IngredientsTable(Base):
     pizza = relationship("Pizza", secondary=pizza_ingredient_table, back_populates="ingredients")
 
 
-class OrdersTable(Base):
-    __tablename__ = "orders"
-
-
-class OrdersPizzasTable(Base):
-    __tablename__ = "order_pizzas"
+# class OrdersTable(Base):
+#     __tablename__ = "orders"
+#
+#
+# class OrdersPizzasTable(Base):
+#     __tablename__ = "order_pizzas"

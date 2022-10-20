@@ -20,4 +20,4 @@ class Pizza(ORMBaseModel):
     price: float
     calories: int
     weight: int
-    ingredients: tuple[Ingredient]
+    ingredients: tuple[Ingredient, ...]

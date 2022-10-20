@@ -18,7 +18,7 @@ def create_user(db: SessionLocal, user: User):
     password = 'ololo'
     db_user = UsersTable(
         id=user.id,
-        username='fffinik',
+        username=user.username,
         email=user.email,
         hashed_password=password,
         is_active=user.is_active,
@@ -91,13 +91,17 @@ PIZZAS = [
 
 ### TABLES CREATION ###
 
-tables = [PizzasTable.__table__, IngredientsTable.__table__, ]
-Base.metadata.create_all(engine, tables=tables)
-
-pizza_ingredient_table.create(engine)
+# tables = [PizzasTable.__table__, IngredientsTable.__table__, ]
+# Base.metadata.create_all(engine, tables=tables)
+#
+# pizza_ingredient_table.create(engine)
 
 ### INSERT DATA INTO DATABASE ###
 
 db_session = SessionLocal()
-new_user = create_user(db_session, py_user)
-print(new_user)
+
+for user in USERS:
+    create_user(db_session, user)
+
+# for ing in INGREDIENTS:
+#     add_ingredients(db_session, ing)
