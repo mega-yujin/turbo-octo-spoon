@@ -123,5 +123,9 @@ db_session = SessionLocal()
 # for ing in INGREDIENTS:
 #     add_ingredients(db_session, ing)
 
-for pizza in PIZZAS:
-    add_pizzas(db_session, pizza)
+# for pizza in PIZZAS:
+#     add_pizzas(db_session, pizza)
+
+all_pizzas = db_session.query(PizzasTable).all()
+pizza = all_pizzas[0]
+print(Pizza(**pizza.__dict__, ingredients=pizza.ingredients).json())
