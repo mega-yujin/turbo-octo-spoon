@@ -15,7 +15,7 @@ class UsersTable(Base):
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
 
-    orders = relationship('OrdersTable', back_poopulate='user')
+    orders = relationship('OrdersTable')
 
 
 pizza_ingredient_table = Table(
@@ -68,10 +68,12 @@ class OrdersTable(Base):
     __tablename__ = "orders"
 
     id = Column(String, primary_key=True, index=True)
-    user_id = Column(String, ForeignKey('users.id'))
+    user = Column(String, ForeignKey('users.id'))
     city = Column(String)
     street = Column(String)
+    building = Column(String)
     delivery_time = Column(DateTime, default=lambda: datetime.utcnow() + timedelta(minutes=30))
+    total_price = Column(Float)
     is_delivered = Column(Boolean, default=False)
 
     ordered_items = relationship('PizzasTable', secondary=orders_pizzas_table)

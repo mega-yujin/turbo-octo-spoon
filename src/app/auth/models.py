@@ -1,5 +1,5 @@
 from app.api.models import ORMBaseModel
-from uuid import UUID
+from app.orders.models import Order
 from typing import Optional, Union
 
 
@@ -10,12 +10,13 @@ class User(ORMBaseModel):
     email: Union[str, None] = None
     is_active: Union[bool, None] = None
 
-    class Config:
-        orm_mode = True
-
 
 class UserInDB(User):
     hashed_password: str
+
+
+class UserWithOrders(User):
+    orders: Optional[list[Order]]
 
 
 class Token(ORMBaseModel):

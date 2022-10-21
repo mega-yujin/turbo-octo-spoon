@@ -15,7 +15,7 @@ class Ingredient(ORMBaseModel):
 class Pizza(ORMBaseModel):
     id: str
     name: str
-    category: Optional[str]
+    category: Optional[PizzaCategory]
     description: str
     price: float
     calories: int
