@@ -108,23 +108,23 @@ PIZZAS = [
 
 ### TABLES CREATION ###
 
-# tables = [PizzasTable.__table__, IngredientsTable.__table__, UsersTable.__table__]
-# Base.metadata.create_all(engine, tables=tables)
-#
-# pizza_ingredient_table.create(engine)
+tables = [PizzasTable.__table__, IngredientsTable.__table__, UsersTable.__table__]
+Base.metadata.create_all(engine, tables=tables)
+
+pizza_ingredient_table.create(engine)
 
 ### INSERT DATA INTO DATABASE ###
 
 db_session = SessionLocal()
-#
-# for user in USERS:
-#     create_user(db_session, user)
 
-# for ing in INGREDIENTS:
-#     add_ingredients(db_session, ing)
+for user in USERS:
+    create_user(db_session, user)
 
-# for pizza in PIZZAS:
-#     add_pizzas(db_session, pizza)
+for ing in INGREDIENTS:
+    add_ingredients(db_session, ing)
+
+for pizza in PIZZAS:
+    add_pizzas(db_session, pizza)
 
 all_pizzas = db_session.query(PizzasTable).all()
 pizza = all_pizzas[0]
