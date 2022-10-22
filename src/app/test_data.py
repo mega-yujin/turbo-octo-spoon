@@ -126,8 +126,8 @@ INGREDIENTS = [
 
 PIZZAS = [
     Pizza(
-        id='857cbf13-4fg2-4d1c-91ff-b64de2d9112g',
-        name='margherita_2',
+        id='857cbf13-4fg2-4d1c-91ff-b64d82d9112g',
+        name='margherita',
         category=PizzaCategory(id='1', name='classic'),
         description='mega pizza',
         price=20.5,
@@ -135,11 +135,11 @@ PIZZAS = [
         weight=320,
         ingredients=[
             Ingredient(
-                id='857cbf13-4fg2-4d1f-91ff-b74de2d916d2',
+                id='857cbf13-4fg2-4d1f-91fl-b74de2d916d2',
                 name='mozarella',
             ),
             Ingredient(
-                id='561cbf13-d23a-4d1c-91ff-b74de2d916d2',
+                id='561cbf13-d23a-4d1c-91f0-b74de2d916d2',
                 name='tomatoto',
             ),
         ],
@@ -148,8 +148,9 @@ PIZZAS = [
 
 ORDERS = [
     Order(
-        id='123',
-        user=USERS[0],
+        id='1',
+        # user=USERS[0],
+        user='USERS[0]',
         city='Minsk',
         street='Some street',
         building='2342',
@@ -209,7 +210,9 @@ pizza = all_pizzas[0]
 
 all_users = db_session.query(UsersTable).all()
 user = all_users[0]
+
 # orders = user.orders
 # print(orders[0].__dict__)
+
 print(UserWithOrders(**user.__dict__, orders=user.orders).json())
 print(Pizza(**pizza.__dict__, ingredients=pizza.ingredients, category=pizza.category).json())

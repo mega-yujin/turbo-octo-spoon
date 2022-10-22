@@ -44,7 +44,7 @@ class PizzasTable(Base):
     calories = Column(Integer)
     weight = Column(Integer)
 
-    ingredients = relationship("IngredientsTable", secondary=pizza_ingredient_table, back_populates="pizza")
+    ingredients = relationship("IngredientsTable", secondary=pizza_ingredient_table, back_populates="pizzas")
     category = relationship('CategoriesTable')
 
 
@@ -61,14 +61,14 @@ class IngredientsTable(Base):
     id = Column(String, primary_key=True, index=True)
     name = Column(String)
 
-    pizza = relationship("PizzasTable", secondary=pizza_ingredient_table, back_populates="ingredients")
+    pizzas = relationship("PizzasTable", secondary=pizza_ingredient_table, back_populates="ingredients")
 
 
 class OrdersTable(Base):
     __tablename__ = "orders"
 
     id = Column(String, primary_key=True, index=True)
-    user = Column(String, ForeignKey('users.id'))
+    user_id = Column(String, ForeignKey('users.id'))
     city = Column(String)
     street = Column(String)
     building = Column(String)

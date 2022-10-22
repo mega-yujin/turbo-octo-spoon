@@ -1,6 +1,6 @@
+from typing import Union
+
 from app.api.models import ORMBaseModel
-from app.orders.models import Order
-from typing import Optional, Union
 
 
 class User(ORMBaseModel):
@@ -13,10 +13,6 @@ class User(ORMBaseModel):
 
 class UserInDB(User):
     hashed_password: str
-
-
-class UserWithOrders(User):
-    orders: Optional[list[Order]]
 
 
 class Token(ORMBaseModel):
