@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 from uuid import uuid4
 
 from pydantic import Field
@@ -6,15 +6,22 @@ from pydantic import Field
 from app.api.models import ORMBaseModel
 
 
-class User(ORMBaseModel):
-    id: str = Field(default=str(uuid4()))
+class BaseUser(ORMBaseModel):
     username: str
-    email: Union[str, None] = None
+    email: Optional[str] = None
+
+
+class User(BaseUser):
+    id: str = Field(default=str(uuid4()))
     is_active: Union[bool, None] = None
 
 
 class UserInDB(User):
     hashed_password: str
+
+
+class UserCreate(BaseUser):
+    password: str
 
 
 class Token(ORMBaseModel):
