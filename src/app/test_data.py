@@ -1,6 +1,6 @@
 import datetime
 
-from app.system.database import SessionLocal
+from app.system.database import DBSession
 from app.auth.models import User
 from app.orders.models import Order, UserWithOrders
 from app.pizzeria.models import Pizza, PizzaCategory, Ingredient
@@ -20,7 +20,7 @@ from app.system.schemas import (
 ### TESTDATA ###
 
 
-def create_user(db: SessionLocal, user: User):
+def create_user(db: DBSession, user: User):
     password = 'ololo'
     db_user = UsersTable(
         id=user.id,
@@ -35,7 +35,7 @@ def create_user(db: SessionLocal, user: User):
     return db_user
 
 
-def add_ingredients(db: SessionLocal, ingredient: Ingredient):
+def add_ingredients(db: DBSession, ingredient: Ingredient):
     db_category = IngredientsTable(**ingredient.dict())
     db.add(db_category)
     db.commit()
@@ -43,7 +43,7 @@ def add_ingredients(db: SessionLocal, ingredient: Ingredient):
     return db_category
 
 
-def add_category(db: SessionLocal, p_category: PizzaCategory):
+def add_category(db: DBSession, p_category: PizzaCategory):
     db_category = CategoriesTable(**p_category.dict())
     db.add(db_category)
     db.commit()
@@ -51,7 +51,7 @@ def add_category(db: SessionLocal, p_category: PizzaCategory):
     return db_category
 
 
-def add_pizzas(db: SessionLocal, pizza: Pizza):
+def add_pizzas(db: DBSession, pizza: Pizza):
     db_pizza = PizzasTable(
         id=pizza.id,
         name=pizza.name,
@@ -68,7 +68,7 @@ def add_pizzas(db: SessionLocal, pizza: Pizza):
     return db_pizza
 
 
-def add_order(db: SessionLocal, order: Order):
+def add_order(db: DBSession, order: Order):
     db_order = OrdersTable(
         id=order.id,
         user_id=order.user_id,
@@ -189,7 +189,7 @@ CATEGORIES = [
 
 ### INSERT DATA INTO DATABASE ###
 
-db_session = SessionLocal()
+db_session = DBSession()
 
 # for user in USERS:
 #     create_user(db_session, user)
