@@ -1,11 +1,13 @@
 from typing import Union
+from uuid import uuid4
+
+from pydantic import Field
 
 from app.api.models import ORMBaseModel
 
 
 class User(ORMBaseModel):
-    # id: UUID
-    id: str
+    id: str = Field(default=str(uuid4()))
     username: str
     email: Union[str, None] = None
     is_active: Union[bool, None] = None
