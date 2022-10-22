@@ -1,25 +1,25 @@
-from pydantic import BaseModel
+from app.api.models import ORMBaseModel
+from typing import Optional
+from pydantic import Field
 from uuid import uuid4
-from app.auth.models import User
 
 
-class PizzaCategory:
-    id: uuid4
+class PizzaCategory(ORMBaseModel):
+    id: str
     name: str
 
 
-class Pizza(BaseModel):
-    id: uuid4
+class Ingredient(ORMBaseModel):
+    id: str = Field(default=str(uuid4()))
     name: str
-    category: PizzaCategory
+
+
+class Pizza(ORMBaseModel):
+    id: str = Field(default=str(uuid4()))
+    name: str
+    category: Optional[PizzaCategory]
     description: str
     price: float
     calories: int
-
-
-class Order(BaseModel):
-    id: uuid4
-    user: User
-    data: list[Pizza]
-    price: float
-    calories: int
+    weight: int
+    ingredients: list[Ingredient]

@@ -1,30 +1,32 @@
-from pydantic import BaseModel
-from uuid import UUID
-from typing import Optional, Union
+from typing import Union
+from uuid import uuid4
+
+from pydantic import Field
+
+from app.api.models import ORMBaseModel
 
 
-class User(BaseModel):
-    # id: UUID
+class User(ORMBaseModel):
+    id: str = Field(default=str(uuid4()))
     username: str
     email: Union[str, None] = None
-    full_name: Union[str, None] = None
-    disabled: Union[bool, None] = None
+    is_active: Union[bool, None] = None
 
 
 class UserInDB(User):
     hashed_password: str
 
 
-class Token(BaseModel):
+class Token(ORMBaseModel):
     access_token: str
     token_type: str
 
 
-class TokenData(BaseModel):
+class TokenData(ORMBaseModel):
     username: Union[str, None] = None
 
 
-class AuthResponse(BaseModel):
+class AuthResponse(ORMBaseModel):
     result: str
     detail: str
     token: Token

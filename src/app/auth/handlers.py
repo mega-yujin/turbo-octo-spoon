@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from app.auth.authentication import create_access_token, authenticate_user, get_current_active_user
+from app.auth.service import create_access_token, authenticate_user, get_current_active_user
 from app.auth.models import User
 from app.config import fake_users_db, ACCESS_TOKEN_EXPIRE_MINUTES
 from app.auth.models import Token, AuthResponse
@@ -30,7 +30,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     )
 
 
-# @app.get("/users/me/", response_model=User)
 async def get_user_data(current_user: User = Depends(get_current_active_user)):
     return current_user
 
