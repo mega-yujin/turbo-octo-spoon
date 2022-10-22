@@ -1,10 +1,12 @@
 import datetime
 
 from app.system.database import SessionLocal
-from app.api.models import User, Pizza, PizzaCategory, Ingredient, Order, UserWithOrders
+from app.auth.models import User
+from app.orders.models import Order, UserWithOrders
+from app.pizzeria.models import Pizza, PizzaCategory, Ingredient
 from app.system.database import engine
 from src.app.system.database import Base
-from app.system.db_tables import (
+from app.system.schemas import (
     UsersTable,
     PizzasTable,
     CategoriesTable,
@@ -12,7 +14,6 @@ from app.system.db_tables import (
     OrdersTable,
     pizza_ingredient_table,
     orders_pizzas_table,
-
 )
 
 
@@ -70,7 +71,7 @@ def add_pizzas(db: SessionLocal, pizza: Pizza):
 def add_order(db: SessionLocal, order: Order):
     db_order = OrdersTable(
         id=order.id,
-        user=order.user.id,
+        user_id=order.user_id,
         city=order.city,
         street=order.street,
         building=order.building,
