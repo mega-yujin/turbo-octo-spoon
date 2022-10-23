@@ -13,7 +13,6 @@ from app.config import AppSettings, get_settings
 from app.system.database import get_db_session
 from app.system.schemas import UsersTable
 
-
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="Could not validate credentials",
@@ -26,16 +25,22 @@ register_exception = HTTPException(
     headers={"WWW-Authenticate": "Bearer"},
 )
 
+inactive_user_exception = HTTPException(
+    status_code=status.HTTP_403_FORBIDDEN,
+    detail="User inactive",
+)
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+
 
 class AuthService:
     def __init__(
             self,
             db_session: Session = Depends(get_db_session),
-            settings: AppSettings = Depends(get_settings),
+            settings: AppSettings = get_settings(),
     ):
         self.db_session = db_session
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-        self.oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
         self.settings = settings
 
     def authenticate_user(self, username: str, password: str) -> Token:
@@ -46,11 +51,10 @@ class AuthService:
             raise credentials_exception
         return self._create_access_token(user)
 
-    async def get_current_active_user(self, request):
-        token = await self.oauth2_scheme(request)
+    def get_current_active_user(self, token: str) -> User:
         current_user = self.get_current_user(token)
         if not current_user.is_active:
-            raise HTTPException(status_code=400, detail="Inactive user")
+            raise inactive_user_exception
         return current_user
 
     def get_current_user(self, token: str) -> User:

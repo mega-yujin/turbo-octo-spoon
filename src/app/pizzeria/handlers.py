@@ -1,5 +1,10 @@
-def get_all_pizzas():
-    pass
+from app.pizzeria.service import PizzeriaService
+
+from fastapi import Depends
+
+
+def get_all_pizzas(service: PizzeriaService = Depends()):
+    return service.get_all_pizzas()
 
 
 def get_pizza():

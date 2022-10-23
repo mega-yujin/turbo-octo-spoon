@@ -1,11 +1,13 @@
 from fastapi import FastAPI
 from app.api.routes import setup_routes
+from app.system.middlewares import setup_middlewares
 import uvicorn
 
 
 def prepare_app():
     app = FastAPI()
     setup_routes(app)
+    setup_middlewares(app)
     return app
 
 
