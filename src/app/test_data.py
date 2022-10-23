@@ -151,7 +151,7 @@ ORDERS = [
     Order(
         id='1',
         # user=USERS[0],
-        user='USERS[0]',
+        user_id='USERS[0]',
         city='Minsk',
         street='Some street',
         building='2342',
@@ -175,17 +175,17 @@ CATEGORIES = [
 
 ### TABLES CREATION ###
 
-# tables = [
-#     PizzasTable.__table__,
-#     IngredientsTable.__table__,
-#     UsersTable.__table__,
-#     CategoriesTable.__table__,
-#     OrdersTable.__table__
-# ]
-# Base.metadata.create_all(engine, tables=tables)
-#
-# pizza_ingredient_table.create(engine)
-# orders_pizzas_table.create(engine)
+tables = [
+    PizzasTable.__table__,
+    IngredientsTable.__table__,
+    UsersTable.__table__,
+    CategoriesTable.__table__,
+    OrdersTable.__table__
+]
+Base.metadata.create_all(engine, tables=tables)
+
+pizza_ingredient_table.create(engine)
+orders_pizzas_table.create(engine)
 
 ### INSERT DATA INTO DATABASE ###
 
@@ -206,14 +206,14 @@ db_session = DBSession()
 # for category in CATEGORIES:
 #     add_category(db_session, category)
 
-all_pizzas = db_session.query(PizzasTable).all()
-pizza = all_pizzas[0]
-
-all_users = db_session.query(UsersTable).all()
-user = all_users[0]
+# all_pizzas = db_session.query(PizzasTable).all()
+# pizza = all_pizzas[0]
+#
+# all_users = db_session.query(UsersTable).all()
+# user = all_users[0]
 
 # orders = user.orders
 # print(orders[0].__dict__)
 
-print(UserWithOrders(**user.__dict__, orders=user.orders).json())
-print(Pizza(**pizza.__dict__, ingredients=pizza.ingredients, category=pizza.category).json())
+# print(UserWithOrders(**user.__dict__, orders=user.orders).json())
+# print(Pizza(**pizza.__dict__, ingredients=pizza.ingredients, category=pizza.category).json())

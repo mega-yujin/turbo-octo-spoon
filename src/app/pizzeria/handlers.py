@@ -1,4 +1,5 @@
 from app.pizzeria.service import PizzeriaService
+from app.pizzeria.models import Pizza, PizzaCreatedResponse
 
 from fastapi import Depends
 
@@ -11,8 +12,8 @@ def get_pizza():
     pass
 
 
-def add_pizza():
-    pass
+def add_pizza(pizza: Pizza, service: PizzeriaService = Depends()):
+    return service.add_pizza(pizza)
 
 
 def delete_pizza():
