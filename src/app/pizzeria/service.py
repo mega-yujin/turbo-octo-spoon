@@ -8,7 +8,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from app.auth.models import UserInDB, User, Token, UserCreate
-from app.pizzeria.models import Pizza, PizzaCategory, Ingredient, PizzaAddedResponse
+from app.pizzeria.models import Pizza, PizzaCategory, Ingredient, PizzaAddedResponse, PizzaFoundResponse
 from app.config import AppSettings, get_settings
 from app.system.database import get_db_session
 from app.system.schemas import (
@@ -30,8 +30,16 @@ class PizzeriaService:
         self.db_session = db_session
         self.settings = settings
 
-    def get_pizza(self, name: str):
-        return self.db_session.query(PizzasTable).filter(PizzasTable.name == name).first()
+    def get_pizza(self, name: str) -> PizzaFoundResponse:
+        db_pizza = self.db_session.query(PizzasTable).filter(PizzasTable.name == name).first()
+        if db_pizza:
+            result = PizzaFoundResponse(pizza=Pizza.from_orm(db_pizza))
+        else:
+            result = PizzaFoundResponse(
+                result='fail',
+                detail='No such pizza'
+            )
+        return result
 
     def get_all_pizzas(self) -> list[Pizza]:
         all_pizzas = self.db_session.query(PizzasTable).all()

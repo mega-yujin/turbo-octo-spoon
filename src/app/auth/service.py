@@ -34,10 +34,6 @@ inactive_user_exception = HTTPException(
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
-# def verify_user(token: str = Depends(oauth2_scheme)) -> User:
-#     return AuthService.verify_user(token)
-
-
 class AuthService:
     def __init__(
             self,

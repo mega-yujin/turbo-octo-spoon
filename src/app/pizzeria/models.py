@@ -1,4 +1,4 @@
-from app.api.models import ORMBaseModel
+from app.api.models import ORMBaseModel, BaseResponse
 from typing import Optional
 from pydantic import Field, UUID4
 from uuid import uuid4
@@ -25,7 +25,11 @@ class Pizza(ORMBaseModel):
     ingredients: list[Ingredient]
 
 
-class PizzaAddedResponse(ORMBaseModel):
-    result: str = Field(default='ok')
+class PizzaAddedResponse(BaseResponse):
     detail: str = Field(default='pizza added')
+    pizza: Optional[Pizza]
+
+
+class PizzaFoundResponse(BaseResponse):
+    detail: str = Field(default='pizza found')
     pizza: Optional[Pizza]

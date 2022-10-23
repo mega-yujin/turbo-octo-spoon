@@ -1,7 +1,7 @@
 from fastapi import APIRouter, FastAPI
 from app.auth.models import AuthResponse, User
 from app.auth.handlers import get_user_data, login, register
-from app.pizzeria.models import Pizza, PizzaAddedResponse
+from app.pizzeria.models import Pizza, PizzaAddedResponse, PizzaFoundResponse
 from app.pizzeria.handlers import get_all_pizzas, get_pizza, add_pizza, delete_pizza
 from app.orders.handlers import delete_order, create_order, get_order, get_all_orders
 
@@ -15,7 +15,7 @@ def setup_routes(app: FastAPI) -> None:
     pizza_router = APIRouter(prefix='/pizza', tags=['Pizzeria management'])
     pizza_router.api_route(path='', methods=['GET'], response_model=list[Pizza])(get_all_pizzas)
     pizza_router.api_route(path='', methods=['POST'], response_model=PizzaAddedResponse)(add_pizza)
-    # pizza_router.api_route(path='{pizza_id}', methods=['GET'], response_model=...)(get_pizza)
+    pizza_router.api_route(path='/{pizza_name}', methods=['GET'], response_model=PizzaFoundResponse)(get_pizza)
     # pizza_router.api_route(path='{pizza_id}', methods=['DELETE'], response_model=...)(delete_pizza)
 
     # orders_router = APIRouter(prefix='/orders', tags=['Orders management'])

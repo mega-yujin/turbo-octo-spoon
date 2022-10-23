@@ -1,3 +1,5 @@
+from typing import Union
+
 from app.auth.service import oauth2_scheme, AuthService
 from app.pizzeria.service import PizzeriaService
 from app.pizzeria.models import Pizza, PizzaAddedResponse
@@ -9,8 +11,8 @@ def get_all_pizzas(service: PizzeriaService = Depends()):
     return service.get_all_pizzas()
 
 
-def get_pizza():
-    pass
+def get_pizza(pizza_name: str, service: PizzeriaService = Depends()):
+    return service.get_pizza(pizza_name)
 
 
 def add_pizza(
