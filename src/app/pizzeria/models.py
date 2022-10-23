@@ -5,17 +5,17 @@ from uuid import uuid4
 
 
 class PizzaCategory(ORMBaseModel):
-    id: str = Field(default=str(uuid4()))
+    id: UUID4 = Field(default_factory=uuid4)
     name: str
 
 
 class Ingredient(ORMBaseModel):
-    id: str = Field(default=str(uuid4()))
+    id: UUID4 = Field(default_factory=uuid4)
     name: str
 
 
 class Pizza(ORMBaseModel):
-    id: str = Field(default=str(uuid4()))
+    id: UUID4 = Field(default_factory=uuid4)
     name: str
     category: Optional[PizzaCategory]
     description: Optional[str]

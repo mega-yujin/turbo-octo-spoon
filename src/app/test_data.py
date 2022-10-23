@@ -1,5 +1,7 @@
 import datetime
+from uuid import UUID
 
+from sqlalchemy import insert
 from app.system.database import DBSession
 from app.auth.models import User
 from app.orders.models import Order, UserWithOrders
@@ -95,15 +97,22 @@ def add_order(db: DBSession, order: Order):
     return db_order
 
 
+def add_pizzas_to_order(pizzas: list[Pizza], order: Order):
+    prepared_data = [{'order_id': order.id, 'pizza_id': pizza.id} for pizza in pizzas]
+    print(prepared_data)
+    conn = engine.connect()
+    conn.execute(orders_pizzas_table.insert(), prepared_data)
+
+
+
+
 USERS = [
     User(
-        id='857cbf13-d22a-4d1c-91ff-b74de2d916d8',
         username='finik',
         email='kot@mail.com',
         is_active=True,
     ),
     User(
-        id='317cbf13-d22a-4d1c-91ff-b74de2d916d8',
         username='papa',
         email='papa@mail.com',
         is_active=True,
@@ -112,35 +121,30 @@ USERS = [
 
 INGREDIENTS = [
     Ingredient(
-        id='857cbf13-d22a-4d1c-91ff-b74de2d916d2',
         name='cheese',
     ),
     Ingredient(
-        id='561cbf13-d22a-4d1c-91ff-b74de21916d2',
         name='tomato',
     ),
     Ingredient(
-        id='857cbf13-4fg2-4d1c-91ff-d74de2d916d2',
         name='mozarella',
     )
 ]
 
 PIZZAS = [
     Pizza(
-        id='857cbf13-4fg2-4d1c-91ff-b64d82d9112g',
+        id=UUID('c479d86f-6e4e-49dd-ab04-afa9022f76df'),
         name='margherita',
-        category=PizzaCategory(id='1', name='classic'),
+        category=PizzaCategory(id=UUID('0d92cad1-5c9b-4ad9-b617-eb46380df8a7'), name='classic'),
         description='mega pizza',
         price=20.5,
         calories=520,
         weight=320,
         ingredients=[
             Ingredient(
-                id='857cbf13-4fg2-4d1f-91fl-b74de2d916d2',
                 name='mozarella',
             ),
             Ingredient(
-                id='561cbf13-d23a-4d1c-91f0-b74de2d916d2',
                 name='tomatoto',
             ),
         ],
@@ -149,9 +153,9 @@ PIZZAS = [
 
 ORDERS = [
     Order(
-        id='1',
         # user=USERS[0],
-        user_id='USERS[0]',
+        id=UUID('1fc80f79-b7ca-4399-b1c2-814910d85049'),
+        user_id=UUID('68cf2205-b6f9-4a7a-bb66-fe3115302c10'),
         city='Minsk',
         street='Some street',
         building='2342',
@@ -164,28 +168,26 @@ ORDERS = [
 
 CATEGORIES = [
     PizzaCategory(
-        id=1,
         name='classic',
     ),
     PizzaCategory(
-        id=2,
         name='not classic',
     ),
 ]
 
 ### TABLES CREATION ###
 
-tables = [
-    PizzasTable.__table__,
-    IngredientsTable.__table__,
-    UsersTable.__table__,
-    CategoriesTable.__table__,
-    OrdersTable.__table__
-]
-Base.metadata.create_all(engine, tables=tables)
-
-pizza_ingredient_table.create(engine)
-orders_pizzas_table.create(engine)
+# tables = [
+#     PizzasTable.__table__,
+#     IngredientsTable.__table__,
+#     UsersTable.__table__,
+#     CategoriesTable.__table__,
+#     OrdersTable.__table__
+# ]
+# Base.metadata.create_all(engine, tables=tables)
+#
+# pizza_ingredient_table.create(engine)
+# orders_pizzas_table.create(engine)
 
 ### INSERT DATA INTO DATABASE ###
 
@@ -196,12 +198,14 @@ db_session = DBSession()
 
 # for ing in INGREDIENTS:
 #     add_ingredients(db_session, ing)
-#
+
 # for pizza in PIZZAS:
 #     add_pizzas(db_session, pizza)
 
 # for order in ORDERS:
 #     add_order(db_session, order)
+
+add_pizzas_to_order(PIZZAS, ORDERS[0])
 
 # for category in CATEGORIES:
 #     add_category(db_session, category)

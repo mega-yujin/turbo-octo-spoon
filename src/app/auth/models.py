@@ -1,7 +1,7 @@
 from typing import Union, Optional
 from uuid import uuid4
 
-from pydantic import Field
+from pydantic import Field, UUID4
 
 from app.api.models import ORMBaseModel
 
@@ -12,7 +12,7 @@ class BaseUser(ORMBaseModel):
 
 
 class User(BaseUser):
-    id: str = Field(default=str(uuid4()))
+    id: UUID4 = Field(default_factory=uuid4)
     is_active: Union[bool, None] = None
 
 
