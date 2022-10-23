@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float, Table, DateTime
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from src.app.system.database import Base
@@ -9,7 +10,7 @@ from src.app.system.database import Base
 class UsersTable(Base):
     __tablename__ = "users"
 
-    id = Column(String, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
@@ -36,9 +37,9 @@ orders_pizzas_table = Table(
 class PizzasTable(Base):
     __tablename__ = "pizzas"
 
-    id = Column(String, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
-    category_id = Column(String, ForeignKey('categories.id'))
+    category_id = Column(UUID(as_uuid=True), ForeignKey('categories.id'))
     description = Column(String)
     price = Column(Float)
     calories = Column(Integer)
@@ -51,14 +52,14 @@ class PizzasTable(Base):
 class CategoriesTable(Base):
     __tablename__ = 'categories'
 
-    id = Column(String, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True)
     name = Column(String)
 
 
 class IngredientsTable(Base):
     __tablename__ = "ingredients"
 
-    id = Column(String, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True)
     name = Column(String)
 
     pizzas = relationship("PizzasTable", secondary=pizza_ingredient_table, back_populates="ingredients")
@@ -67,8 +68,8 @@ class IngredientsTable(Base):
 class OrdersTable(Base):
     __tablename__ = "orders"
 
-    id = Column(String, primary_key=True, index=True)
-    user_id = Column(String, ForeignKey('users.id'))
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey('users.id'))
     city = Column(String)
     street = Column(String)
     building = Column(String)

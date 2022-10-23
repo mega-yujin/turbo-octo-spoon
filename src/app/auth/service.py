@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 from uuid import uuid4
+import json
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -12,7 +13,6 @@ from app.auth.models import UserInDB, User, Token, UserCreate
 from app.config import AppSettings, get_settings
 from app.system.database import get_db_session
 from app.system.schemas import UsersTable
-
 
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -26,6 +26,13 @@ register_exception = HTTPException(
     headers={"WWW-Authenticate": "Bearer"},
 )
 
+inactive_user_exception = HTTPException(
+    status_code=status.HTTP_403_FORBIDDEN,
+    detail="User inactive",
+)
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+
 
 class AuthService:
     def __init__(
@@ -35,7 +42,6 @@ class AuthService:
     ):
         self.db_session = db_session
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-        self.oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
         self.settings = settings
 
     def authenticate_user(self, username: str, password: str) -> Token:
@@ -46,17 +52,17 @@ class AuthService:
             raise credentials_exception
         return self._create_access_token(user)
 
-    async def get_current_active_user(self, request):
-        token = await self.oauth2_scheme(request)
+    def verify_user(self, token: str) -> User:
         current_user = self.get_current_user(token)
         if not current_user.is_active:
-            raise HTTPException(status_code=400, detail="Inactive user")
+            raise inactive_user_exception
         return current_user
 
     def get_current_user(self, token: str) -> User:
         try:
             payload = jwt.decode(token, self.settings.SECRET_KEY, algorithms=[self.settings.ALGORITHM])
-            username: str = payload.get('user_data').get('username')
+            user_data = json.loads(payload.get('user_data'))
+            username = user_data.get('username')
             if username is None:
                 raise credentials_exception
         except JWTError:
@@ -71,7 +77,7 @@ class AuthService:
         if user:
             raise register_exception
         user_in_db = UsersTable(
-            id=str(uuid4()),
+            id=uuid4(),
             username=new_user.username,
             email=new_user.email,
             hashed_password=self._get_password_hash(new_user.password),
@@ -87,7 +93,7 @@ class AuthService:
         else:
             expire = datetime.utcnow() + timedelta(minutes=15)
         data = {
-            'user_data': user.dict(),
+            'user_data': user.json(),
             'exp': expire
         }
         encoded_jwt = jwt.encode(data, self.settings.SECRET_KEY, algorithm=self.settings.ALGORITHM)

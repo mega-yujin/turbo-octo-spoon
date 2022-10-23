@@ -1,9 +1,9 @@
-from fastapi import Depends, Request
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.auth.models import UserCreate
 from app.auth.models import Token, AuthResponse
-from app.auth.service import AuthService
+from app.auth.service import AuthService, oauth2_scheme
 
 
 def login(login_data: OAuth2PasswordRequestForm = Depends(), service: AuthService = Depends()):
@@ -15,41 +15,13 @@ def login(login_data: OAuth2PasswordRequestForm = Depends(), service: AuthServic
     )
 
 
-async def get_user_data(request: Request, service: AuthService = Depends()):
-    return await service.get_current_active_user(request)
+def get_user_data(token: str = Depends(oauth2_scheme), service: AuthService = Depends()):
+    return service.verify_user(token)
 
 
 def register(user_data: UserCreate, service: AuthService = Depends()):
     return AuthResponse(
             result="ok",
             detail="authentication success",
-            token=Token(
-                access_token=service.register_user(user_data),
-                token_type="bearer",
-            ),
+            token=service.register_user(user_data),
         )
-
-# async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-#     user = authenticate_user(fake_users_db, form_data.username, form_data.password)
-#     if not user:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Incorrect username or password",
-#             headers={"WWW-Authenticate": "Bearer"},
-#         )
-#     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-#     access_token = create_access_token(
-#         data={"sub": user.username}, expires_delta=access_token_expires
-#     )
-#     return AuthResponse(
-#         result="ok",
-#         detail="authentication success",
-#         token=Token(
-#             access_token=access_token,
-#             token_type="bearer",
-#         ),
-#     )
-
-
-# async def get_user_data(current_user: User = Depends(get_current_active_user)):
-#     return current_user

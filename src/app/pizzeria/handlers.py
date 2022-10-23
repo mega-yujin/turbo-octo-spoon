@@ -1,14 +1,46 @@
-def get_all_pizzas():
-    pass
+from typing import Union
+
+from app.auth.service import oauth2_scheme, AuthService
+from app.pizzeria.service import PizzeriaService
+from app.pizzeria.models import Pizza, PizzaAddedResponse, PizzaUpdate
+
+from fastapi import Depends
 
 
-def get_pizza():
-    pass
+def get_all_pizzas(service: PizzeriaService = Depends()):
+    return service.get_all_pizzas()
 
 
-def add_pizza():
-    pass
+def get_pizza(pizza_name: str, service: PizzeriaService = Depends()):
+    return service.get_pizza(pizza_name)
 
 
-def delete_pizza():
-    pass
+def add_pizza(
+    pizza: Pizza,
+    token: str = Depends(oauth2_scheme),
+    service: PizzeriaService = Depends(),
+    auth_service: AuthService = Depends(),
+):
+    auth_service.verify_user(token)
+    return service.add_pizza(pizza)
+
+
+def delete_pizza(
+    pizza_name: str,
+    token: str = Depends(oauth2_scheme),
+    auth_service: AuthService = Depends(),
+    service: PizzeriaService = Depends()
+):
+    auth_service.verify_user(token)
+    return service.delete_pizza(pizza_name)
+
+
+def update_pizza(
+    pizza_name: str,
+    update_data: PizzaUpdate,
+    token: str = Depends(oauth2_scheme),
+    auth_service: AuthService = Depends(),
+    service: PizzeriaService = Depends()
+):
+    auth_service.verify_user(token)
+    return service.update_pizza(pizza_name, update_data)
