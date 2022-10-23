@@ -25,6 +25,17 @@ class Pizza(ORMBaseModel):
     ingredients: list[Ingredient]
 
 
+class PizzaUpdate(ORMBaseModel):
+    id: Optional[str]
+    name: Optional[str]
+    category: Optional[str]
+    description: Optional[str]
+    price: Optional[float]
+    calories: Optional[int]
+    weight: Optional[int]
+    ingredients: Optional[list[Ingredient]]
+
+
 class PizzaAddedResponse(BaseResponse):
     detail: str = Field(default='pizza added')
     pizza: Optional[Pizza]
@@ -32,4 +43,13 @@ class PizzaAddedResponse(BaseResponse):
 
 class PizzaFoundResponse(BaseResponse):
     detail: str = Field(default='pizza found')
+    pizza: Optional[Pizza]
+
+
+class PizzaDeletedResponse(BaseResponse):
+    detail: str = Field(default='pizza deleted successfully')
+
+
+class PizzaUpdatedResponse(BaseResponse):
+    detail: str = Field(default='pizza updated successfully')
     pizza: Optional[Pizza]

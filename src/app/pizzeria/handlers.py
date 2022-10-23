@@ -2,7 +2,7 @@ from typing import Union
 
 from app.auth.service import oauth2_scheme, AuthService
 from app.pizzeria.service import PizzeriaService
-from app.pizzeria.models import Pizza, PizzaAddedResponse
+from app.pizzeria.models import Pizza, PizzaAddedResponse, PizzaUpdate
 
 from fastapi import Depends
 
@@ -25,6 +25,22 @@ def add_pizza(
     return service.add_pizza(pizza)
 
 
-def delete_pizza(pizza_name, token: str = Depends(oauth2_scheme), auth_service: AuthService = Depends()):
+def delete_pizza(
+    pizza_name: str,
+    token: str = Depends(oauth2_scheme),
+    auth_service: AuthService = Depends(),
+    service: PizzeriaService = Depends()
+):
     auth_service.verify_user(token)
-    pass
+    return service.delete_pizza(pizza_name)
+
+
+def update_pizza(
+    pizza_name: str,
+    update_data: PizzaUpdate,
+    token: str = Depends(oauth2_scheme),
+    auth_service: AuthService = Depends(),
+    service: PizzeriaService = Depends()
+):
+    auth_service.verify_user(token)
+    return service.update_pizza(pizza_name, update_data)

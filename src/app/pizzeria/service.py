@@ -8,7 +8,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from app.auth.models import UserInDB, User, Token, UserCreate
-from app.pizzeria.models import Pizza, PizzaCategory, Ingredient, PizzaAddedResponse, PizzaFoundResponse
+from app.pizzeria.models import Pizza, PizzaCategory, Ingredient, PizzaAddedResponse, PizzaFoundResponse, PizzaDeletedResponse, PizzaUpdate, PizzaUpdatedResponse
 from app.config import AppSettings, get_settings
 from app.system.database import get_db_session
 from app.system.schemas import (
@@ -72,6 +72,26 @@ class PizzeriaService:
             )
             self._insert_pizza_ingredients(pizza.id, ingredients_status)
             result = PizzaAddedResponse(pizza=pizza)
+        return result
+
+    def delete_pizza(self, name: str):
+        db_pizza = self.db_session.query(PizzasTable).filter(PizzasTable.name == name).first()
+        if db_pizza:
+            self.db_session.delete(db_pizza)
+            self.db_session.commit()
+            result = PizzaDeletedResponse()
+        else:
+            result = PizzaDeletedResponse(result='Fail', detail='No such pizza')
+        return result
+
+    def update_pizza(self, name: str, update_data: PizzaUpdate):
+        db_pizza = self.db_session.query(PizzasTable).filter(PizzasTable.name == name)
+        if db_pizza:
+            db_pizza.update(update_data.dict())
+            self.db_session.commit()
+            result = PizzaUpdatedResponse(Pizza.from_orm(db_pizza))
+        else:
+            result = PizzaUpdatedResponse(result='Fail', detail='No such pizza')
         return result
 
     def _insert(self, data):
