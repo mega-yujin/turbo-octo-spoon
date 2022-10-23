@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 from uuid import uuid4
+import json
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -33,11 +34,15 @@ inactive_user_exception = HTTPException(
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
+# def verify_user(token: str = Depends(oauth2_scheme)) -> User:
+#     return AuthService.verify_user(token)
+
+
 class AuthService:
     def __init__(
             self,
             db_session: Session = Depends(get_db_session),
-            settings: AppSettings = get_settings(),
+            settings: AppSettings = Depends(get_settings),
     ):
         self.db_session = db_session
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -51,7 +56,7 @@ class AuthService:
             raise credentials_exception
         return self._create_access_token(user)
 
-    def get_current_active_user(self, token: str) -> User:
+    def verify_user(self, token: str) -> User:
         current_user = self.get_current_user(token)
         if not current_user.is_active:
             raise inactive_user_exception
@@ -60,7 +65,8 @@ class AuthService:
     def get_current_user(self, token: str) -> User:
         try:
             payload = jwt.decode(token, self.settings.SECRET_KEY, algorithms=[self.settings.ALGORITHM])
-            username: str = payload.get('user_data').get('username')
+            user_data = json.loads(payload.get('user_data'))
+            username = user_data.get('username')
             if username is None:
                 raise credentials_exception
         except JWTError:
@@ -75,7 +81,7 @@ class AuthService:
         if user:
             raise register_exception
         user_in_db = UsersTable(
-            id=str(uuid4()),
+            id=uuid4(),
             username=new_user.username,
             email=new_user.email,
             hashed_password=self._get_password_hash(new_user.password),
@@ -91,7 +97,7 @@ class AuthService:
         else:
             expire = datetime.utcnow() + timedelta(minutes=15)
         data = {
-            'user_data': user.dict(),
+            'user_data': user.json(),
             'exp': expire
         }
         encoded_jwt = jwt.encode(data, self.settings.SECRET_KEY, algorithm=self.settings.ALGORITHM)

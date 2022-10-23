@@ -104,7 +104,28 @@ def add_pizzas_to_order(pizzas: list[Pizza], order: Order):
     conn.execute(orders_pizzas_table.insert(), prepared_data)
 
 
+def test_add_pizzas_to_order(db: DBSession):
+    prepared_data = [
+        {
+            'order_id': UUID('aac80f79-b7ca-4399-b1c2-814910d85049'),
+            'pizza_id': UUID('aa79d86f-6e4e-49dd-ab04-afa9022f76df')
+        },
+        {
+            'order_id': UUID('bbc80f79-b7ca-4399-b1c2-814910d85049'),
+            'pizza_id': UUID('bb79d86f-6e4e-49dd-ab04-afa9022f76df')
+        },
+    ]
 
+    # db.add(orders_pizzas_table.insert(prepared_data))
+    # db.execute(orders_pizzas_table.insert(), prepared_data)
+    # db.commit()
+
+    # conn = engine.connect()
+    # conn.execute(orders_pizzas_table.insert(), prepared_data)
+
+
+ss = DBSession()
+test_add_pizzas_to_order(ss)
 
 USERS = [
     User(
@@ -205,7 +226,7 @@ db_session = DBSession()
 # for order in ORDERS:
 #     add_order(db_session, order)
 
-add_pizzas_to_order(PIZZAS, ORDERS[0])
+# add_pizzas_to_order(PIZZAS, ORDERS[0])
 
 # for category in CATEGORIES:
 #     add_category(db_session, category)

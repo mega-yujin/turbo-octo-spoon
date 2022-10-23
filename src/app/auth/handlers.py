@@ -16,15 +16,12 @@ def login(login_data: OAuth2PasswordRequestForm = Depends(), service: AuthServic
 
 
 def get_user_data(token: str = Depends(oauth2_scheme), service: AuthService = Depends()):
-    return service.get_current_active_user(token)
+    return service.verify_user(token)
 
 
 def register(user_data: UserCreate, service: AuthService = Depends()):
     return AuthResponse(
             result="ok",
             detail="authentication success",
-            token=Token(
-                access_token=service.register_user(user_data),
-                token_type="bearer",
-            ),
+            token=service.register_user(user_data),
         )

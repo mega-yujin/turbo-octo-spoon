@@ -7,7 +7,7 @@ import uvicorn
 def prepare_app():
     app = FastAPI()
     setup_routes(app)
-    setup_middlewares(app)
+    # setup_middlewares(app)
     return app
 
 

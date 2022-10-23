@@ -25,6 +25,7 @@ class Pizza(ORMBaseModel):
     ingredients: list[Ingredient]
 
 
-class PizzaCreatedResponse(ORMBaseModel):
-    result: str
-    pizza: Pizza
+class PizzaAddedResponse(ORMBaseModel):
+    result: str = Field(default='ok')
+    detail: str = Field(default='pizza added')
+    pizza: Optional[Pizza]
