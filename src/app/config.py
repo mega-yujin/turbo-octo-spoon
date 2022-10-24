@@ -9,6 +9,9 @@ class AppSettings(BaseSettings):
 
     SQLALCHEMY_DATABASE_URL: str
 
+    APP_HOST: str
+    APP_PORT: int
+
     class Config:
         env_file = "config.env"
         env_file_encoding = 'utf-8'

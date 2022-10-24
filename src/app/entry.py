@@ -1,21 +1,25 @@
 from fastapi import FastAPI
-from app.api.routes import setup_routes
-from app.system.middlewares import setup_middlewares
 import uvicorn
+
+from app.config import get_settings
+from app.system.middlewares import setup_middlewares
+from app.api.routes import setup_routes
+
+settings = get_settings()
 
 
 def prepare_app():
     app = FastAPI()
     setup_routes(app)
-    # setup_middlewares(app)
+    setup_middlewares(app)
     return app
 
 
 def start_app():
     uvicorn.run(
         app=prepare_app(),
-        host='127.0.0.1',
-        port=8000,
+        host=settings.APP_HOST,
+        port=settings.APP_PORT,
     )
 
 

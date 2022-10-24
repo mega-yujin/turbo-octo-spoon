@@ -198,15 +198,15 @@ CATEGORIES = [
 
 ### TABLES CREATION ###
 
-# tables = [
-#     PizzasTable.__table__,
-#     IngredientsTable.__table__,
-#     UsersTable.__table__,
-#     CategoriesTable.__table__,
-#     OrdersTable.__table__
-# ]
-# Base.metadata.create_all(engine, tables=tables)
-#
+tables = [
+    PizzasTable.__table__,
+    IngredientsTable.__table__,
+    UsersTable.__table__,
+    CategoriesTable.__table__,
+    OrdersTable.__table__
+]
+Base.metadata.create_all(engine, tables=tables)
+
 # pizza_ingredient_table.create(engine)
 # orders_pizzas_table.create(engine)
 
@@ -243,9 +243,9 @@ db_session = DBSession()
 # print(UserWithOrders(**user.__dict__, orders=user.orders).json())
 # print(Pizza(**pizza.__dict__, ingredients=pizza.ingredients, category=pizza.category).json())
 
-order = db_session.query(OrdersTable).first()
-item = order.ordered_items
-print(item)
-
-ass = db_session.query(orders_pizzas_table).first()
-print(ass)
+# order = db_session.query(OrdersTable).first()
+# item = order.ordered_items
+# print(item)
+#
+# ass = db_session.query(orders_pizzas_table).first()
+# print(ass)

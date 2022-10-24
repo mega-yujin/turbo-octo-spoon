@@ -39,4 +39,5 @@ class AuthCheckMiddleware(BaseHTTPMiddleware):
 
 
 def setup_middlewares(app: FastAPI) -> None:
-    app.add_middleware(AuthCheckMiddleware, endpoints=AUTH_REQUIRED)
+    # app.add_middleware(AuthCheckMiddleware, endpoints=AUTH_REQUIRED)
+    pass
