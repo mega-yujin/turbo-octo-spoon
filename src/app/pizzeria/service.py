@@ -1,4 +1,5 @@
 from uuid import UUID
+from typing import Union
 
 from fastapi import Depends
 from sqlalchemy.orm import Session
@@ -31,7 +32,7 @@ class PizzeriaService:
         self.settings = settings
 
     def get_pizza(self, name: str) -> PizzaFoundResponse:
-        db_pizza = self.db_session.query(PizzasTable).filter(PizzasTable.name == name).first()
+        db_pizza = self._get_pizza(name)
         if db_pizza:
             result = PizzaFoundResponse(pizza=Pizza.from_orm(db_pizza))
         else:
@@ -41,12 +42,15 @@ class PizzeriaService:
             )
         return result
 
+    def _get_pizza(self, name: str) -> Union[PizzasTable, None]:
+        return self.db_session.query(PizzasTable).filter(PizzasTable.name == name).first()
+
     def get_all_pizzas(self) -> list[Pizza]:
         all_pizzas = self.db_session.query(PizzasTable).all()
         return [Pizza.from_orm(pizza) for pizza in all_pizzas]
 
     def add_pizza(self, pizza: Pizza):
-        if self.get_pizza(pizza.name):
+        if self._get_pizza(pizza.name):
             result = PizzaAddedResponse(result='fail', detail='pizza with such name already exists')
         else:
             category = self._get_pizza_category(pizza.category.name)

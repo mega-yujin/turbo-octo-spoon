@@ -35,7 +35,7 @@ class OrdersService:
         self.settings = settings
 
     def get_active_orders(self, user_id: UUID) -> ActiveOrdersResponse:
-        db_orders = self.db_session.query(OrdersTable).filter(OrdersTable.user_id == user_id).all()
+        db_orders = self.db_session.query(OrdersTable).filter(OrdersTable.user_id == user_id).filter(OrdersTable.is_delivered == False).all()
         if db_orders:
             result = ActiveOrdersResponse(orders=[Order.from_orm(order) for order in db_orders])
         else:
@@ -48,19 +48,19 @@ class OrdersService:
 
     def add_order(self, order_in_request: OrderAddRequest, user_id: UUID):
         ordered_pizzas_prices = {
-            self.db_session.query(PizzasTable).filter(PizzasTable.id == pizza.pizza_id).first().id: pizza.amount
+            self.db_session.query(PizzasTable).filter(PizzasTable.id == pizza.id).first().price: pizza.amount
             for pizza in order_in_request.ordered_items
         }
 
         total_price = 0
-        for pizza in order_in_request.ordered_items:
-            total_price += ordered_pizzas_prices.get(pizza.pizza_id) * pizza.amount
+        for price, amount in ordered_pizzas_prices.items():
+            total_price += price * amount
 
         order = Order(**order_in_request.dict(), user_id=user_id, total_price=total_price)
 
         self._insert(
             OrdersTable(
-                order=order_in_request.id,
+                id=order_in_request.id,
                 user_id=user_id,
                 city=order_in_request.city,
                 street=order_in_request.street,
@@ -69,16 +69,16 @@ class OrdersService:
                 total_price=total_price,
             )
         )
-        self._insert_ordered_pizzas(order_in_request)
+        self._insert_pizzas_to_order(order_in_request)
+        result = OrderAddResponse(order=order)
+        return result
 
-        return OrderAddResponse(order=order)
-
-    def update_order(self, update_order: OrderUpdateRequest):
-        db_order = self.db_session.query(OrdersTable).filter(OrdersTable.id == update_order.id)
+    def update_order(self, order_id: UUID, update_order: OrderUpdateRequest):
+        db_order = self.db_session.query(OrdersTable).filter(OrdersTable.id == order_id)
         if db_order:
             db_order.update(update_order.dict(exclude_none=True, exclude={'id'}))
             self.db_session.commit()
-            result = OrderUpdateResponse(order=Order.from_orm(db_order))
+            result = OrderUpdateResponse(order=Order.from_orm(db_order.first()))
         else:
             result = OrderUpdateResponse(result='Fail', detail='No such order')
         return result
@@ -96,16 +96,10 @@ class OrdersService:
     def _update(self, data):
         pass
 
-    def _insert_ordered_pizzas(self, order: OrderAddRequest):
+    def _insert_pizzas_to_order(self, order: OrderAddRequest):
         prepared_data = [
-            {'order_id': order.id, 'pizza_id': pizza.pizza_id}
+            {'order_id': order.id, 'pizza_id': pizza.id}
             for pizza in order.ordered_items
         ]
         self.db_session.execute(orders_pizzas_table.insert(), prepared_data)
         self.db_session.commit()
-
-    def _get_ingredient(self, ingredient_name: str):
-        return self.db_session.query(IngredientsTable).filter(IngredientsTable.name == ingredient_name).first()
-
-    def _get_pizza_category(self, category_name: str):
-        return self.db_session.query(CategoriesTable).filter(CategoriesTable.name == category_name).first()

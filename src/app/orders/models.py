@@ -10,7 +10,7 @@ from app.pizzeria.models import Pizza
 
 
 class OrderedPizza(ORMBaseModel):
-    pizza_id: UUID4
+    id: UUID4
     amount: int = Field(default=1)
 
 
@@ -50,12 +50,11 @@ class OrderAddRequest(ORMBaseModel):
     city: str
     street: str
     building: str
-    delivery_time: datetime = Field(default=lambda: datetime.utcnow() + timedelta(minutes=30))
+    delivery_time: datetime = Field(default_factory=lambda: datetime.utcnow() + timedelta(minutes=30))
     ordered_items: list[OrderedPizza]
 
 
 class OrderUpdateRequest(ORMBaseModel):
-    id: UUID4
     city: Optional[str]
     street: Optional[str]
     building: Optional[str]

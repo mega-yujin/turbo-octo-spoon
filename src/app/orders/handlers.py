@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from app.auth.service import AuthService, oauth2_scheme
 from app.orders.service import OrdersService
 
@@ -17,13 +19,14 @@ def add_order(
 
 
 def update_order(
+    order_id: UUID,
     order_update: OrderUpdateRequest,
     token: str = Depends(oauth2_scheme),
     auth_service: AuthService = Depends(),
     orders_service: OrdersService = Depends(),
 ):
     auth_service.verify_user(token)
-    return orders_service.update_order(order_update)
+    return orders_service.update_order(order_id, order_update)
 
 
 def get_active_orders(
