@@ -31,6 +31,7 @@ orders_pizzas_table = Table(
     Base.metadata,
     Column('order_id', ForeignKey('orders.id'), primary_key=True),
     Column('pizza_id', ForeignKey('pizzas.id'), primary_key=True),
+    Column('amount', Integer, default=1),
 )
 
 
