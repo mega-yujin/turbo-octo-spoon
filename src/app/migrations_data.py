@@ -207,8 +207,8 @@ tables = [
 ]
 Base.metadata.create_all(engine, tables=tables)
 
-# pizza_ingredient_table.create(engine)
-# orders_pizzas_table.create(engine)
+pizza_ingredient_table.create(engine)
+orders_pizzas_table.create(engine)
 
 ### INSERT DATA INTO DATABASE ###
 
