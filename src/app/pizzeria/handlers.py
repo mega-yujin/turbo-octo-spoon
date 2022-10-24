@@ -1,8 +1,6 @@
-from typing import Union
-
 from app.auth.service import oauth2_scheme, AuthService
 from app.pizzeria.service import PizzeriaService
-from app.pizzeria.models import Pizza, PizzaAddedResponse, PizzaUpdate
+from app.pizzeria.models import Pizza, PizzaUpdateRequest
 
 from fastapi import Depends
 
@@ -37,7 +35,7 @@ def delete_pizza(
 
 def update_pizza(
     pizza_name: str,
-    update_data: PizzaUpdate,
+    update_data: PizzaUpdateRequest,
     token: str = Depends(oauth2_scheme),
     auth_service: AuthService = Depends(),
     service: PizzeriaService = Depends()

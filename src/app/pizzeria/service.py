@@ -1,23 +1,24 @@
-from datetime import datetime, timedelta
-from typing import Optional
 from uuid import UUID
+from typing import Union
 
-from fastapi import Depends, HTTPException
-
-from passlib.context import CryptContext
+from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from app.auth.models import UserInDB, User, Token, UserCreate
-from app.pizzeria.models import Pizza, PizzaCategory, Ingredient, PizzaAddedResponse, PizzaFoundResponse, PizzaDeletedResponse, PizzaUpdate, PizzaUpdatedResponse
 from app.config import AppSettings, get_settings
+from app.pizzeria.models import (
+    Pizza,
+    PizzaAddedResponse,
+    PizzaFoundResponse,
+    PizzaDeletedResponse,
+    PizzaUpdateRequest,
+    PizzaUpdatedResponse
+)
 from app.system.database import get_db_session
 from app.system.schemas import (
-    UsersTable,
     PizzasTable,
     IngredientsTable,
     CategoriesTable,
     pizza_ingredient_table,
-    orders_pizzas_table
 )
 
 
@@ -31,7 +32,7 @@ class PizzeriaService:
         self.settings = settings
 
     def get_pizza(self, name: str) -> PizzaFoundResponse:
-        db_pizza = self.db_session.query(PizzasTable).filter(PizzasTable.name == name).first()
+        db_pizza = self._get_pizza(name)
         if db_pizza:
             result = PizzaFoundResponse(pizza=Pizza.from_orm(db_pizza))
         else:
@@ -41,12 +42,15 @@ class PizzeriaService:
             )
         return result
 
+    def _get_pizza(self, name: str) -> Union[PizzasTable, None]:
+        return self.db_session.query(PizzasTable).filter(PizzasTable.name == name).first()
+
     def get_all_pizzas(self) -> list[Pizza]:
         all_pizzas = self.db_session.query(PizzasTable).all()
         return [Pizza.from_orm(pizza) for pizza in all_pizzas]
 
     def add_pizza(self, pizza: Pizza):
-        if self.get_pizza(pizza.name):
+        if self._get_pizza(pizza.name):
             result = PizzaAddedResponse(result='fail', detail='pizza with such name already exists')
         else:
             category = self._get_pizza_category(pizza.category.name)
@@ -84,12 +88,12 @@ class PizzeriaService:
             result = PizzaDeletedResponse(result='Fail', detail='No such pizza')
         return result
 
-    def update_pizza(self, name: str, update_data: PizzaUpdate):
+    def update_pizza(self, name: str, update_data: PizzaUpdateRequest):
         db_pizza = self.db_session.query(PizzasTable).filter(PizzasTable.name == name)
         if db_pizza:
             db_pizza.update(update_data.dict())
             self.db_session.commit()
-            result = PizzaUpdatedResponse(Pizza.from_orm(db_pizza))
+            result = PizzaUpdatedResponse(pizza=Pizza.from_orm(db_pizza))
         else:
             result = PizzaUpdatedResponse(result='Fail', detail='No such pizza')
         return result

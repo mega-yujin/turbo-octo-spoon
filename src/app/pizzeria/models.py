@@ -25,7 +25,7 @@ class Pizza(ORMBaseModel):
     ingredients: list[Ingredient]
 
 
-class PizzaUpdate(ORMBaseModel):
+class PizzaUpdateRequest(ORMBaseModel):
     id: Optional[str]
     name: Optional[str]
     category: Optional[str]

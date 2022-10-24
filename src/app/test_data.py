@@ -124,8 +124,8 @@ def test_add_pizzas_to_order(db: DBSession):
     # conn.execute(orders_pizzas_table.insert(), prepared_data)
 
 
-ss = DBSession()
-test_add_pizzas_to_order(ss)
+# ss = DBSession()
+# test_add_pizzas_to_order(ss)
 
 USERS = [
     User(
@@ -242,3 +242,10 @@ db_session = DBSession()
 
 # print(UserWithOrders(**user.__dict__, orders=user.orders).json())
 # print(Pizza(**pizza.__dict__, ingredients=pizza.ingredients, category=pizza.category).json())
+
+order = db_session.query(OrdersTable).first()
+item = order.ordered_items
+print(item)
+
+ass = db_session.query(orders_pizzas_table).first()
+print(ass)
