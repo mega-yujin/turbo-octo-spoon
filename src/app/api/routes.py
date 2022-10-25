@@ -6,9 +6,13 @@ from app.pizzeria.handlers import get_all_pizzas, get_pizza, add_pizza, delete_p
 from app.pizzeria.models import Pizza, PizzaAddedResponse, PizzaFoundResponse, PizzaDeletedResponse
 from app.orders.handlers import update_order, add_order, get_active_orders, get_all_orders
 from app.orders.models import Order, ActiveOrdersResponse, OrderAddResponse, OrderUpdateResponse
+from app.system.handlers import check_status
 
 
 def setup_routes(app: FastAPI) -> None:
+    system_monitoring_router = APIRouter(prefix='/health', tags=['System Monitoring'])
+    system_monitoring_router.api_route(path='/check', methods=['GET'])(check_status)
+
     auth_router = APIRouter(prefix='/auth', tags=['Authorization'])
     auth_router.api_route(path='/login', methods=['POST'], response_model=AuthResponse)(login)
     auth_router.api_route(path='/register', methods=['POST'], response_model=AuthResponse)(register)
@@ -29,3 +33,4 @@ def setup_routes(app: FastAPI) -> None:
     app.include_router(auth_router)
     app.include_router(pizza_router)
     app.include_router(orders_router)
+    app.include_router(system_monitoring_router)
