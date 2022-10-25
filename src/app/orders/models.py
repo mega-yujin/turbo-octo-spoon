@@ -6,7 +6,6 @@ from pydantic import Field, UUID4
 
 from app.api.models import ORMBaseModel, BaseResponse
 from app.auth.models import User
-from app.pizzeria.models import Pizza
 
 
 class OrderedPizza(ORMBaseModel):
@@ -50,7 +49,9 @@ class OrderAddRequest(ORMBaseModel):
     city: str
     street: str
     building: str
-    delivery_time: datetime = Field(default_factory=lambda: datetime.utcnow() + timedelta(minutes=30))
+    delivery_time: datetime = Field(
+        default_factory=lambda: datetime.utcnow() + timedelta(minutes=30)
+    )
     ordered_items: list[OrderedPizza]
 
 
@@ -60,4 +61,3 @@ class OrderUpdateRequest(ORMBaseModel):
     building: Optional[str]
     delivery_time: Optional[datetime]
     is_delivered: Optional[bool]
-

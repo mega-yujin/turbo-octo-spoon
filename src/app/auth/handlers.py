@@ -2,7 +2,7 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.auth.models import UserCreate
-from app.auth.models import Token, AuthResponse
+from app.auth.models import AuthResponse
 from app.auth.service import AuthService, oauth2_scheme
 
 

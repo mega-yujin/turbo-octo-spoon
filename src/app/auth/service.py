@@ -60,7 +60,9 @@ class AuthService:
 
     def get_current_user(self, token: str) -> User:
         try:
-            payload = jwt.decode(token, self.settings.SECRET_KEY, algorithms=[self.settings.ALGORITHM])
+            payload = jwt.decode(
+                token, self.settings.SECRET_KEY, algorithms=[self.settings.ALGORITHM]
+            )
             user_data = json.loads(payload.get('user_data'))
             username = user_data.get('username')
             if username is None:
@@ -89,7 +91,9 @@ class AuthService:
 
     def _create_access_token(self, user: UserInDB) -> Token:
         if self.settings.ACCESS_TOKEN_EXPIRE_MINUTES:
-            expire = datetime.utcnow() + timedelta(minutes=self.settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+            expire = datetime.utcnow() + timedelta(
+                minutes=self.settings.ACCESS_TOKEN_EXPIRE_MINUTES
+            )
         else:
             expire = datetime.utcnow() + timedelta(minutes=15)
         data = {
