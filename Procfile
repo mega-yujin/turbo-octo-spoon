@@ -1,1 +1,1 @@
-web: python -m app.service.entry $@
+web: python -m app.entry $@
