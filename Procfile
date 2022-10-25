@@ -1,1 +1,1 @@
-web: src.entry: app
+web: src/entry: app
